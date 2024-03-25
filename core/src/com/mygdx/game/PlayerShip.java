@@ -17,7 +17,7 @@ public class PlayerShip extends Ship{
                       TextureRegion[] shipTextureRegion,
                       TextureRegion laserTextureRegion) {
         super(xCentre, yCentre, width, height, movementSpeed, laserWidth, laserHeight, laserMovementSpeed, timeBetweenShots, shipTextureRegion, laserTextureRegion);
-        lives = 5;
+        lives = 3;
     }
 
     public void touchPosition(Camera camera) {
@@ -31,6 +31,6 @@ public class PlayerShip extends Ship{
     @Override
     public Bullet fire() {
         timeFromLastFire = 0;
-        return new Bullet(bulTextureRegion, bounds.x + 62f, bounds.y + 232f, bulWidth, bulHeight, bulSpeed);
+        return new Bullet(bulTextureRegion, bounds.x + 5f, bounds.y + 5f, bulWidth, bulHeight, bulSpeed);
     }
 }

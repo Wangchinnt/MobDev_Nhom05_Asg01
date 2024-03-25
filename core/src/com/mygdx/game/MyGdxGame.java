@@ -37,10 +37,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	private float backToMenuTime;
 	private final float WORLD_WIDTH = 72;
 	private final float WORLD_HEIGHT = 128;
-	private final float TOUCH_MOVEMENT_THRESHOLD = 5f;
 	private GameState gameState = GameState.Running;
-	private float healthRatio;
-	private int maxLives;
 	private int points;
 	private OrthographicCamera camera;
 	private Viewport viewport;
@@ -55,8 +52,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	private Texture stargroundTexture;
 	private Texture explosionSheet;
 	private Texture enemyTextureSheet;
-	private Texture heathBar;
-	private Texture health;
+	private Texture hearth;
 	private Music gameMusic;
 	private Sound exploreSound;
 	BitmapFont font;
@@ -81,7 +77,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		endStage = new Stage();
 		font = new BitmapFont();
-		font.getData().setScale(6f, 6f);
+		font.getData().setScale(0.3f, (float) (0.3/128*72));
 		//dsdasdasdasdasdas
 		///dasdasdasdasdasd
 		backToMenuTime = 5f;
@@ -90,13 +86,11 @@ public class MyGdxGame extends ApplicationAdapter {
 		points = 0;
 
 		//
-		health = new Texture(Gdx.files.internal("health.png"));
-		heathBar = new Texture(Gdx.files.internal("health_bar.png"));
+		hearth = new Texture(Gdx.files.internal("hearth.png"));
 
 		//camera
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, screenWidth, screenHeight);
-//		viewport = new StretchViewport(screenWidth, screenHeight, camera);
+		viewport = new StretchViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
 
 		//player ship animation
 		Texture texture1 = new Texture(Gdx.files.internal("player_1.png"));
@@ -122,15 +116,12 @@ public class MyGdxGame extends ApplicationAdapter {
 		playerBullet = new Texture(Gdx.files.internal("player_bullet.png"));
 		enemyBullet = new Texture(Gdx.files.internal("projectile_2.png"));
 
-		//
-		playerShip = new PlayerShip(screenWidth/2,
-				100f, 192f,
-				232f, 400f,
-				64f, 128f,
-				1000f, 0.5f,
+		playerShip = new PlayerShip(WORLD_WIDTH/2,
+				WORLD_HEIGHT/4, 9.6f,
+				11.6f, 70,
+				0.4f, 4,
+				150, 0.1f,
 				frames, new TextureRegion(playerBullet));
-
-		maxLives = playerShip.lives;
 
 		//Enemy texture region
 		enemyTextureRegions = loadEnemyAnimation(enemyTextureSheet);
@@ -180,16 +171,15 @@ public class MyGdxGame extends ApplicationAdapter {
 	}
 
 	public void update(float deltaTime) {
-		playerShip.touchPosition(camera);
+		handleInput(deltaTime);
 		playerShip.update(deltaTime);
 		if (enemyShipArray.size <= 10) {
 			spawnEnemy(deltaTime);
 		}
 		spawnBullet(deltaTime);
-		healthRatio = (float) playerShip.lives / maxLives;
 		//move star background
-		bgRect.setY(bgRect.getY()-300*deltaTime);
-		if (bgRect.getY() <= -Gdx.graphics.getHeight()) {
+		bgRect.setY(bgRect.getY()-30*deltaTime);
+		if (bgRect.getY() <= -WORLD_HEIGHT) {
 			bgRect.setY(0f);
 		}
 		//move enemy
@@ -203,13 +193,14 @@ public class MyGdxGame extends ApplicationAdapter {
 	}
 
 	public void draw() {
-		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
+
 		//draw textures
-		batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-		batch.draw(stargroundTexture, 0, bgRect.getY(), Gdx.graphics.getWidth(), Gdx.graphics.getHeight()*2);
-		font.draw(batch, "POINT: " + String.valueOf(points), 30, screenHeight - 200);
+		batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH,WORLD_HEIGHT);
+		batch.draw(stargroundTexture, 0, bgRect.getY(), WORLD_WIDTH, WORLD_HEIGHT*2);
+		font.draw(batch, "POINT : " + points, WORLD_WIDTH/20, WORLD_HEIGHT-10);
 		playerShip.render(batch);
+
 		//draw enemies
 		for (EnemyShip enemyShip:enemyShipArray) {
 			enemyShip.render(batch);
@@ -221,32 +212,33 @@ public class MyGdxGame extends ApplicationAdapter {
 		for (Bullet enemyBul:enemyBulletArray) {
 			enemyBul.render(batch);
 		}
-		//draw explosion
+
 		renderExplosion();
-		//draw heath bar
-		batch.draw(health, 30, screenHeight-130, 500, 100);
-		if (healthRatio > 0) {
-			batch.draw(heathBar, 38, screenHeight - 127, 480 * healthRatio, 49);
+
+		for (int i=0; i<playerShip.lives; i++) {
+			batch.draw(hearth, WORLD_WIDTH/20 + 9.6f*i, WORLD_HEIGHT*19/20, 6.4f, 6.4f);
 		}
+
 
 		batch.end();
 	}
 
 	public void moveEnemy(EnemyShip enemyShip, float deltaTime) {
-//		float rightLimit, leftLimit, upLimit, downLimit;
-//		leftLimit = -enemyShip.bounds.x;
-//		upLimit = (screenHeight - enemyShip.bounds.height)/enemyShip.bounds.height;
-//		rightLimit = (screenWidth - enemyShip.bounds.x)/enemyShip.bounds.width;
-//		downLimit = (screenHeight/2)/enemyShip.bounds.height ;
+		float leftLimit, rightLimit, upLimit, downLimit;
+		leftLimit = -enemyShip.bounds.x;
+		downLimit = WORLD_HEIGHT / 2 - enemyShip.bounds.y;
+		rightLimit = WORLD_WIDTH - enemyShip.bounds.x - enemyShip.bounds.width;
+		upLimit = WORLD_HEIGHT - enemyShip.bounds.y - enemyShip.bounds.height;
+
 
 		float xMove = enemyShip.getDirVector().x * enemyShip.speed * deltaTime;
 		float yMove = enemyShip.getDirVector().y * enemyShip.speed * deltaTime;
 
-//		if (xMove > 0) xMove = Math.min(xMove, rightLimit);
-//		else xMove = leftLimit;
-////
-//		if (yMove > 0) yMove = Math.min(yMove, upLimit);
-//		else yMove = downLimit;
+		if (xMove > 0) xMove = Math.min(xMove, rightLimit);
+		else xMove = Math.max(xMove, leftLimit);
+
+		if (yMove > 0) yMove = Math.min(yMove, upLimit);
+		else yMove = Math.max(yMove, downLimit);
 
 		enemyShip.translate(xMove, yMove);
 	}
@@ -270,7 +262,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		while (iterMilan.hasNext()) {
 			Bullet bullet = iterMilan.next();
 			bullet.update(deltaTime);
-			if (bullet.getBounds().y > screenHeight) iterMilan.remove();
+			if (bullet.getBounds().y > WORLD_HEIGHT) iterMilan.remove();
 		}
 		Iterator<Bullet> mancity = enemyBulletArray.iterator();
 		while (mancity.hasNext()) {
@@ -335,10 +327,10 @@ public class MyGdxGame extends ApplicationAdapter {
 	public void spawnEnemy(float deltaTime) {
 		enemySpawnTimer += deltaTime;
 		if (enemySpawnTimer > enemySpawnGap) {
-			enemyShipArray.add(new EnemyShip(MathUtils.random.nextFloat() * (screenWidth-100),
-					screenHeight - 300, 192f, 232f,
-					300, 128f,
-					64f, 1500,
+			enemyShipArray.add(new EnemyShip(MathUtils.random.nextFloat() * (WORLD_WIDTH-10) + 5,
+					WORLD_HEIGHT - 5, 10, 10,
+					40, 5,
+					4, 80,
 					2f, enemyTextureRegions, new TextureRegion(enemyBullet)));
 			enemySpawnTimer -= enemySpawnGap;
 		}
@@ -396,7 +388,10 @@ public class MyGdxGame extends ApplicationAdapter {
 		endStage.addActor(bgImage);
 
 		backToMenuTime -= Gdx.graphics.getDeltaTime();
-		if (backToMenuTime <= 0) androidAction.returnMainScreenWithScore(points);
+		if (backToMenuTime <= 0) {
+			Gdx.app.exit();
+			androidAction.returnMainScreenWithScore(points);
+		}
 		int seconds = Math.max(0, (int) backToMenuTime);
 
 		Table table = new Table();
@@ -420,7 +415,12 @@ public class MyGdxGame extends ApplicationAdapter {
 		endStage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 		endStage.draw();
 	}
-	
+
+	@Override
+	public void resize(int width, int height) {
+		viewport.update(width, height, true);
+		batch.setProjectionMatrix(camera.combined);
+	}
 	@Override
 	public void dispose () {
 		batch.dispose();

@@ -16,6 +16,7 @@ public class TestClass extends Activity {
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         Intent myIntent = new Intent(this, AndroidLauncher.class);
+        Intent myIntent2 = new Intent(this, PreGameScreen.class);
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.test_layout);
 
@@ -33,7 +34,7 @@ public class TestClass extends Activity {
         mainBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(myIntent);
+                startActivity(myIntent2);
             }
         });
 
