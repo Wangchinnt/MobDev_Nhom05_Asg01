@@ -3,6 +3,7 @@ package com.mygdx.game;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.TabActivity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,19 +11,31 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TabHost;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
+
 import java.util.ArrayList;
 
-public class PreGameScreen extends Activity {
+public class PreGameScreen extends AppCompatActivity {
     private Spinner spinnerContact;
-    private TabHost tabHost;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private String playerName = "You";
+    private Button button;
+    private int aircraftModel;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
@@ -30,8 +43,13 @@ public class PreGameScreen extends Activity {
         this.setContentView(R.layout.prepare_layout);
         this.spinnerContact = findViewById(R.id.spinner);
 
-        this.tabHost = findViewById(R.id.tabHost);
+        tabLayout = findViewById(R.id.tab_layout);
+        viewPager = findViewById(R.id.viewpager);
 
+        ViewPageAdapter viewPageAdapter = new ViewPageAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+
+        viewPager.setAdapter(viewPageAdapter);
+        tabLayout.setupWithViewPager(viewPager);
 
         ArrayList<String> contactList;
         contactList = getContactList();
@@ -41,10 +59,32 @@ public class PreGameScreen extends Activity {
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         this.spinnerContact.setAdapter(arrayAdapter);
+        this.spinnerContact.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                playerName = arrayAdapter.getItem(i);
+                Log.i("SPINNER SELECTED ","ITEM SELECTED " + playerName );
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                playerName = "YOU";
+            }
+        });
+
+        button = findViewById(R.id.button4);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PlayGame(view);
+            }
+        });
     }
 
     private ArrayList<String> getContactList() {
         ArrayList<String> contactList = new ArrayList<>();
+        contactList.add("YOU");
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_CONTACTS}, 0);
@@ -64,5 +104,11 @@ public class PreGameScreen extends Activity {
         return contactList;
     }
 
+    private void PlayGame(View v) {
+        Intent intent = new Intent(this, AndroidLauncher.class);
+        intent.putExtra("name", playerName);
+        intent.putExtra("model", 2);
+        startActivity(intent);
+    }
 
 }

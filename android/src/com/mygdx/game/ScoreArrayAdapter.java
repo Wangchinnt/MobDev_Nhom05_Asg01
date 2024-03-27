@@ -2,12 +2,13 @@ package com.mygdx.game;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class ScoreArrayAdapter extends ArrayAdapter<PlayerScore> {
 
         ((TextView) convertView.findViewById(R.id.textViewTop)).setText("TOP ");
         ((TextView) convertView.findViewById(R.id.textViewPosition)).setText(String.format("%d :", playerScore.getId() + 1));
+        ((TextView) convertView.findViewById(R.id.textViewName)).setText(playerScore.getName());
         ((TextView) convertView.findViewById(R.id.textViewScore)).setText(String.format("%d", playerScore.getPoint()));
 
         return convertView;

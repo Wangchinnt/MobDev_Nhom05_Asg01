@@ -31,6 +31,6 @@ public class PlayerShip extends Ship{
     @Override
     public Bullet fire() {
         timeFromLastFire = 0;
-        return new Bullet(bulTextureRegion, bounds.x + 5f, bounds.y + 5f, bulWidth, bulHeight, bulSpeed);
+        return new Bullet(bulTextureRegion, bounds.x + 4.5f, bounds.y + 5f, bulWidth, bulHeight, bulSpeed);
     }
 }

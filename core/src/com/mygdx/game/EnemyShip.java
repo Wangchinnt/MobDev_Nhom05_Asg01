@@ -50,6 +50,6 @@ public class EnemyShip extends Ship{
     @Override
     public Bullet fire() {
         timeFromLastFire = 0;
-        return new Bullet(bulTextureRegion, bounds.x + 5f, bounds.y, bulWidth, bulHeight, bulSpeed);
+        return new Bullet(bulTextureRegion, bounds.x + 4f, bounds.y, bulWidth, bulHeight, bulSpeed);
     }
 }
