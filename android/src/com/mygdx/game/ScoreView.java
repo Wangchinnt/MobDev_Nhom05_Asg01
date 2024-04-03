@@ -22,7 +22,9 @@ public class ScoreView extends Activity {
         listView = findViewById(R.id.list_view);
         databaseHandle = new DatabaseHandle(this);
 
-        ArrayList<PlayerScore> highscores = databaseHandle.getTopHighscores(10 );
+        ArrayList<PlayerScore> highscores = databaseHandle.getTopHighscores(15);
+//        ArrayList<PlayerScore> highscores = databaseHandle.getPointsWithLocation();
+
         ScoreArrayAdapter adapter = new ScoreArrayAdapter(this, highscores);
 
         listView.setAdapter(adapter);
@@ -35,5 +37,6 @@ public class ScoreView extends Activity {
                 finish();
             }
         });
+
     }
 }

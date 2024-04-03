@@ -44,4 +44,17 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/seekBar"
       app:layout_constraintVertical_bias="0.778" />
+
+  <Switch
+      android:id="@+id/switch1"
+      android:layout_width="256dp"
+      android:layout_height="55dp"
+      android:fontFamily="monospace"
+      android:text="USE GYROSCOPE"
+      android:textSize="20sp"
+      app:layout_constraintBottom_toTopOf="@+id/button_back_2"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/seekBar"
+      app:layout_constraintVertical_bias="0.191" />
 </androidx.constraintlayout.widget.ConstraintLayout>

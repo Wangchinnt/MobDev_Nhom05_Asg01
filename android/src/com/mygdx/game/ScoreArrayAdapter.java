@@ -30,10 +30,10 @@ public class ScoreArrayAdapter extends ArrayAdapter<PlayerScore> {
 
         convertView = mLayoutInflater.inflate(R.layout.score_item, parent, false);
 
-        ((TextView) convertView.findViewById(R.id.textViewTop)).setText("TOP ");
-        ((TextView) convertView.findViewById(R.id.textViewPosition)).setText(String.format("%d :", playerScore.getId() + 1));
+        ((TextView) convertView.findViewById(R.id.textViewTop)).setText("TOP " + String.format("%d :", playerScore.getId() + 1));
         ((TextView) convertView.findViewById(R.id.textViewName)).setText(playerScore.getName());
         ((TextView) convertView.findViewById(R.id.textViewScore)).setText(String.format("%d", playerScore.getPoint()));
+
 
         return convertView;
     }
