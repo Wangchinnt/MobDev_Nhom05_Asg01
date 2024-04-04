@@ -92,7 +92,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		endStage = new Stage();
 		prepareHUD();
-		backToMenuTime = 5f;
+		backToMenuTime = 3f;
 		enemySpawnGap = 1f;
 		enemySpawnTimer = 0f;
 		points = 0;
