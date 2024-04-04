@@ -14,65 +14,162 @@
 
         <TextView
             android:id="@+id/textView2"
-            android:layout_width="319dp"
-            android:layout_height="105dp"
-            android:fontFamily="sans-serif-smallcaps"
+            android:layout_width="340dp"
+            android:layout_height="112dp"
+            android:background="#00FFFFFF"
+            android:fontFamily="casual"
+            android:gravity="center"
             android:text="SPACE FIGHTER"
             android:textAlignment="center"
             android:textAllCaps="true"
             android:textColor="#F1E3E3"
-            android:textSize="48sp"
+            android:textSize="55sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.492"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.186" />
+            app:layout_constraintVertical_bias="0.329" />
 
         <Button
             android:id="@+id/button"
-            android:layout_width="121dp"
-            android:layout_height="62dp"
-            android:text="Chơi"
+            android:layout_width="92dp"
+            android:layout_height="42dp"
+            android:background="#00FFFFFF"
+            android:fontFamily="casual"
+            android:text="play"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.499" />
+            app:layout_constraintVertical_bias="0.436" />
 
         <Button
             android:id="@+id/button2"
-            android:layout_width="124dp"
-            android:layout_height="63dp"
+            android:layout_width="144dp"
+            android:layout_height="45dp"
+            android:background="#00FFFFFF"
+            android:fontFamily="casual"
             android:text="highscore"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button"
-            app:layout_constraintVertical_bias="0.119" />
+            app:layout_constraintVertical_bias="0.079" />
 
         <Button
             android:id="@+id/button3"
-            android:layout_width="125dp"
-            android:layout_height="60dp"
+            android:layout_width="84dp"
+            android:layout_height="42dp"
+            android:background="#00FFFFFF"
+            android:fontFamily="casual"
             android:text="exit"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.506"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button5"
-            app:layout_constraintVertical_bias="0.441" />
+            app:layout_constraintVertical_bias="0.203" />
 
         <Button
             android:id="@+id/button5"
-            android:layout_width="122dp"
-            android:layout_height="65dp"
-            android:layout_marginTop="40dp"
+            android:layout_width="120dp"
+            android:layout_height="44dp"
+            android:layout_marginTop="28dp"
+            android:background="#00FFFFFF"
+            android:fontFamily="casual"
             android:onClick="openSetting"
             android:text="Setting"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button6" />
+
+        <Button
+            android:id="@+id/button6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:background="#00FFFFFF"
+            android:fontFamily="casual"
+            android:text="community"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button2" />
+
+        <Button
+            android:id="@+id/button_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#74171616"
+            android:text="Sign In"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toTopOf="@+id/button_signup"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.077"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.347" />
+
+        <Button
+            android:id="@+id/button_signup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#831E1D1D"
+            android:text="Sign up"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toTopOf="@+id/textView2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.074"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.569" />
+
+        <ImageView
+            android:id="@+id/user_image"
+            android:layout_width="98dp"
+            android:layout_height="84dp"
+            android:foregroundGravity="center_vertical|center_horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/textView2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.078"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.136"
+            app:srcCompat="@drawable/background" />
+
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="98dp"
+            android:layout_height="44dp"
+            android:background="#252525"
+            android:fontFamily="monospace"
+            android:gravity="center"
+            android:text="Hi, Giang"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toTopOf="@+id/textView2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.079"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/user_image"
+            app:layout_constraintVertical_bias="0.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

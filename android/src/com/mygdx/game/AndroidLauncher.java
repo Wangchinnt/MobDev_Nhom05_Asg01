@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
@@ -21,21 +22,20 @@ public class AndroidLauncher extends AndroidApplication implements AndroidAction
 		Intent intent = getIntent();
 		String name = intent.getStringExtra("name");
 		int model = intent.getIntExtra("model", 1);
+		String path = intent.getStringExtra("path");
 
-		initialize(new MyGdxGame(this, name, model), config);
+		Log.i("LAUNCHER", "Name : " + name + " Model : " + model + " Path : " + path);
+		initialize(new MyGdxGame(this, name, model, path), config);
 	}
 
-	@Override
-	public void returnMainScreen() {
-		Intent intent = new Intent(this, TestClass.class);
-		startActivity(intent);
-	}
 
 	@Override
 	public void returnMainScreenWithScore(int score, String name) {
-		Intent intent = new Intent(this, TestClass.class);
+		BackgroundMusicService.continueMusic();
+		Intent intent = new Intent(this, AfterGameScreen.class);
 		intent.putExtra("score", score);
 		intent.putExtra("name", name);
 		startActivity(intent);
+		finish();
 	}
 }

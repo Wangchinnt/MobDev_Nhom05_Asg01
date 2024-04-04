@@ -1,13 +1,13 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -18,23 +18,26 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.Iterator;
 
 public class MyGdxGame extends ApplicationAdapter {
 	private SpriteBatch batch;
+	private Stage gameStage;
 	private Stage endStage;
 	private AndroidAction androidAction;
 	private String name;
 	private int model;
-	private float screenWidth;
-	private float screenHeight;
+	private String path;
 	private float backToMenuTime;
 	private final float WORLD_WIDTH = 72;
 	private final float WORLD_HEIGHT = 128;
@@ -44,19 +47,25 @@ public class MyGdxGame extends ApplicationAdapter {
 	private OrthographicCamera camera;
 	private Viewport viewport;
 	private Label timeLabel;
-	private Rectangle bgRect;
 	private TextureRegion[] frames;
+	private Rectangle bgRect;
+	private Rectangle bgRect1;
+	private Rectangle bgRect2;
 	private TextureRegion[] enemyTextureRegions;
 	private TextureRegion[] explosionTextureRegions;
 	private Texture playerBullet;
+	private Texture pauseTexture;
 	private Texture enemyBullet;
 	private Texture backgroundTexture;
 	private Texture stargroundTexture;
 	private Texture explosionSheet;
 	private Texture enemyTextureSheet;
 	private Texture hearth;
+	private Texture layerTexture = null;
+	private ImageButton pauseButton;
 	private Music gameMusic;
 	private Sound exploreSound;
+	private Sound overSound;
 	BitmapFont font;
 	//Game timer
 	private float enemySpawnTimer;
@@ -67,11 +76,14 @@ public class MyGdxGame extends ApplicationAdapter {
 	private Array<Bullet> playerBulletArray = new Array<>();
 	private Array<Bullet> enemyBulletArray = new Array<>();
 	private Array<Explosion> explosionArray = new Array<>();
+	private String leftGyro = "none";
+	private String rightGyro = "none";
 
-	public MyGdxGame(AndroidAction androidAction, String name, int model) {
+	public MyGdxGame(AndroidAction androidAction, String name, int model, String path) {
 		this.androidAction = androidAction;
 		this.name = name;
 		this.model = model;
+		this.path = path;
 	}
 
 	@Override
@@ -89,47 +101,53 @@ public class MyGdxGame extends ApplicationAdapter {
 		//camera
 		camera = new OrthographicCamera();
 		viewport = new StretchViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
-
-		//player ship animation
-//		Texture texture1 = new Texture(Gdx.files.internal("player_1_1.png"));
-//		Texture texture2 = new Texture(Gdx.files.internal("player_2_1.png"));
-//		Texture texture3 = new Texture(Gdx.files.internal("player_3_1.png"));
-//		TextureRegion textureRegion1 = new TextureRegion(texture1);
-//		TextureRegion textureRegion2 = new TextureRegion(texture2);
-//		TextureRegion textureRegion3 = new TextureRegion(texture3);
-//		frames = new TextureRegion[] {textureRegion1, textureRegion2, textureRegion3};
+		gameStage = new Stage(new ScreenViewport());
 
 		//load explosion sprite sheet
 		explosionSheet = new Texture(Gdx.files.internal("explosion-spritesheet.png"));
 
 		//background
 		bgRect = new Rectangle();
+		bgRect1 = new Rectangle();
+		bgRect2 = new Rectangle();
 		bgRect.setX(0f);
 		bgRect.setY(0f);
+		bgRect1.setX(0f);
+		bgRect1.setY(0f);
+		bgRect2.setX(0f);
+		bgRect2.setY(0f);
 
 		//other texture
+		pauseTexture = new Texture(Gdx.files.internal("button.png"));
 		enemyTextureSheet = new Texture(Gdx.files.internal("spritesheet_enemy_1.png"));
 		backgroundTexture = new Texture(Gdx.files.internal("background2.png"));
 		stargroundTexture = new Texture(Gdx.files.internal("stars_1.png"));
 		playerBullet = new Texture(Gdx.files.internal("player_bullet.png"));
 		enemyBullet = new Texture(Gdx.files.internal("projectile_2.png"));
-		createPlayer();
 
-//		playerShip = new PlayerShip(WORLD_WIDTH/2,
-//				WORLD_HEIGHT/4, 9.6f,
-//				11.6f, 70,
-//				1f, 4,
-//				150, 0.1f,
-//				frames, new TextureRegion(playerBullet));
+		//customBG
+		if (path != null) {
+			backgroundTexture = new Texture(Gdx.files.absolute(path));
+		}
+
+		createPlayer();
 
 		//Enemy texture region
 		enemyTextureRegions = loadEnemyAnimation(enemyTextureSheet);
 		explosionTextureRegions = loadExplosionAnimation(explosionSheet);
+		TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(new TextureRegion(pauseTexture));
+		pauseButton = new ImageButton(textureRegionDrawable);
+		pauseButton.setPosition(10, 10);
+		pauseButton.setWidth(20f);
+		pauseButton.setHeight(20f);
+		gameStage.addActor(pauseButton);
 
 		//sound
 		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("starwarbgsound.mp3"));
-		gameMusic.setVolume(0.2f);
+		gameMusic.setVolume(0.5f);
 		exploreSound = Gdx.audio.newSound(Gdx.files.internal("laser.wav"));
+		overSound = Gdx.audio.newSound(Gdx.files.internal("oversound.mp3"));
+
 		gameMusic.setLooping(true);
 		gameMusic.play();
 	}
@@ -162,7 +180,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		fontParameter.size = 72;
 		fontParameter.borderWidth = 3.6f;
-		fontParameter.color = new Color(1, 1, 1, 0.3f);
+		fontParameter.color = new Color(1, 1, 1, 1.0f);
 		fontParameter.borderColor = new Color(0, 0, 0, 0.3f);
 		font = fontGenerator.generateFont(fontParameter);
 
@@ -194,7 +212,14 @@ public class MyGdxGame extends ApplicationAdapter {
 	@Override
 	public void render () {
 		ScreenUtils.clear(0, 0, 0, 1);
+
+		gameStage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+		gameStage.draw();
+
 		if (playerShip.lives <= 0) {
+			if (backToMenuTime == 5f) {
+				overSound.play();
+			}
 			gameOverHud();
 			gameState = GameState.Pause;
 		}
@@ -213,9 +238,17 @@ public class MyGdxGame extends ApplicationAdapter {
 		}
 		spawnBullet(deltaTime);
 		//move star background
-		bgRect.setY(bgRect.getY()-30*deltaTime);
+		bgRect.setY(bgRect.getY()-20*deltaTime);
+		bgRect1.setY(bgRect1.getY()-30*deltaTime);
+		bgRect2.setY(bgRect2.getY()-40*deltaTime);
 		if (bgRect.getY() <= -WORLD_HEIGHT) {
 			bgRect.setY(0f);
+		}
+		if (bgRect1.getY() <= -WORLD_HEIGHT) {
+			bgRect1.setY(0f);
+		}
+		if (bgRect2.getY() <= -WORLD_HEIGHT) {
+			bgRect2.setY(0f);
 		}
 		//move enemy
 		Iterator<EnemyShip> iter = enemyShipArray.iterator();
@@ -231,8 +264,10 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch.begin();
 
 		//draw textures
-		batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH,WORLD_HEIGHT);
+		batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT);
 		batch.draw(stargroundTexture, 0, bgRect.getY(), WORLD_WIDTH, WORLD_HEIGHT*2);
+		batch.draw(stargroundTexture, 0, bgRect1.getY(), WORLD_WIDTH, WORLD_HEIGHT*2);
+		batch.draw(stargroundTexture, 0, bgRect2.getY(), WORLD_WIDTH, WORLD_HEIGHT*2);
 		playerShip.render(batch);
 
 		//draw enemies
@@ -255,16 +290,18 @@ public class MyGdxGame extends ApplicationAdapter {
 		font.draw(batch, "score : " + points, WORLD_WIDTH/20, WORLD_HEIGHT-13);
 		font.draw(batch, "name : " + name, WORLD_WIDTH/20, WORLD_HEIGHT-20);
 
+		font.draw(batch, leftGyro, WORLD_WIDTH/20, WORLD_HEIGHT-25);
+		font.draw(batch, rightGyro, WORLD_WIDTH*15/20, WORLD_HEIGHT-25);
+
 		batch.end();
 	}
 
 	public void moveEnemy(EnemyShip enemyShip, float deltaTime) {
 		float leftLimit, rightLimit, upLimit, downLimit;
 		leftLimit = -enemyShip.bounds.x;
-		downLimit = WORLD_HEIGHT / 2 - enemyShip.bounds.y;
+		downLimit = WORLD_HEIGHT / 1.5f - enemyShip.bounds.y;
 		rightLimit = WORLD_WIDTH - enemyShip.bounds.x - enemyShip.bounds.width;
 		upLimit = WORLD_HEIGHT - enemyShip.bounds.y - enemyShip.bounds.height;
-
 
 		float xMove = enemyShip.getDirVector().x * enemyShip.speed * deltaTime;
 		float yMove = enemyShip.getDirVector().y * enemyShip.speed * deltaTime;
@@ -326,14 +363,29 @@ public class MyGdxGame extends ApplicationAdapter {
 		rightLimit = WORLD_WIDTH - playerShip.bounds.x - playerShip.bounds.width;
 		upLimit = WORLD_HEIGHT - playerShip.bounds.y - playerShip.bounds.height;
 
-//		if (gyroscopeAvail) {
-//			float gyroY = Gdx.input.getGyroscopeY();
-//			if (gyroY > 0) {
-//				playerShip.translate(deltaTime*playerShip.speed/100000, playerShip.bounds.y);
-//			} else if (gyroY < 0) {
-//				playerShip.translate(-playerShip.speed*deltaTime/100000, playerShip.bounds.y);
-//			}
-//		}
+		if (gyroscopeAvail) {
+			float gyroX = Gdx.input.getGyroscopeX();
+			float gyroY = Gdx.input.getGyroscopeY();
+			if (gyroY > 0.3) {
+				if (playerShip.getBounds().x <= WORLD_WIDTH - playerShip.getBounds().width) {
+					playerShip.translate(playerShip.speed*2/3 * deltaTime, 0f);
+				}
+				rightGyro = String.valueOf(gyroY);
+			} else if (gyroY < -0.3) {
+				if (playerShip.getBounds().x > playerShip.getBounds().width) {
+					playerShip.translate(-playerShip.speed*2/3 * deltaTime, 0f);
+				}
+				leftGyro = String.valueOf(gyroY);
+			}
+			if (gyroX > 0.3) {
+				if (playerShip.getBounds().y > playerShip.getBounds().height) {
+					playerShip.translate(0f, -playerShip.speed*2/3 * deltaTime);
+				}
+//				playerShip.translate(0f, -playerShip.speed/2 * deltaTime);
+			} else if (gyroX < -0.3) {
+				playerShip.translate(0f, playerShip.speed/2 * deltaTime);
+			}
+		}
 
 		if (Gdx.input.isTouched()) {
 			float xTouchPixels = Gdx.input.getX();
@@ -375,7 +427,7 @@ public class MyGdxGame extends ApplicationAdapter {
 					WORLD_HEIGHT - 5, 10, 10,
 					40, 5,
 					4, 80,
-					2f, enemyTextureRegions, new TextureRegion(enemyBullet)));
+					1f, enemyTextureRegions, new TextureRegion(enemyBullet)));
 			enemySpawnTimer -= enemySpawnGap;
 		}
 	}
@@ -392,7 +444,7 @@ public class MyGdxGame extends ApplicationAdapter {
 			while (bulletIterator.hasNext()) {
 				Bullet playerBullet = bulletIterator.next();
 				if (enemyShip.overlaps(playerBullet.getBounds())) {
-					exploreSound.play();
+					exploreSound.play(0.7f);
 					explosionArray.add(
 							new Explosion(explosionTextureRegions,
 									new Rectangle(enemyShip.getBounds()),
@@ -433,7 +485,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		backToMenuTime -= Gdx.graphics.getDeltaTime();
 		if (backToMenuTime <= 0) {
-			Gdx.app.exit();
+//			Gdx.app.exit();
 			androidAction.returnMainScreenWithScore(points, name);
 		}
 		int seconds = Math.max(0, (int) backToMenuTime);
@@ -442,17 +494,17 @@ public class MyGdxGame extends ApplicationAdapter {
 		table.setFillParent(true);
 
 		Label gameOverLabel = new Label("Game Over!", skin);
-		gameOverLabel.setFontScale(6f, 6f);
+		gameOverLabel.setFontScale(5f, 5f);
 		table.add(gameOverLabel).center().padBottom(20).row();
 
 		// Display score here
 		Label scoreLabel = new Label("Your Score: " + points, skin);
-		scoreLabel.setFontScale(4f, 4f);
+		scoreLabel.setFontScale(3f, 3f);
 		table.add(scoreLabel).center().padBottom(20).row();
 
 		timeLabel = new Label("", skin);
 		timeLabel.setText("Turn back to Menu in : " + seconds );
-		timeLabel.setFontScale(3f, 3f);
+		timeLabel.setFontScale(2f, 2f);
 		table.add(timeLabel).center().padTop(20).row();
 
 		endStage.addActor(table);
@@ -464,6 +516,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	public void resize(int width, int height) {
 		viewport.update(width, height, true);
 		batch.setProjectionMatrix(camera.combined);
+		gameStage.getViewport().update(width, height, true);
 	}
 	@Override
 	public void dispose () {

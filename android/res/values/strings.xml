@@ -4,5 +4,7 @@
     <string name="app_name">Air Fighter</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_community">CommunityActivity</string>
+    <string name="gg_map_api">AIzaSyBX_ei6nkrkkncQGkbxMay_uH424i3zXU8</string>
 
 </resources>
