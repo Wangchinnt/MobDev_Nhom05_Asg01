@@ -86,6 +86,9 @@ xmlns:tools="http://schemas.android.com/tools">
             <action android:name="android.intent.action.VIEW" />
         </intent-filter>
     </activity>
+    <activity android:name=".WebViewActivity">
+
+    </activity>
 
     <service android:name=".BackgroundMusicService" />
 

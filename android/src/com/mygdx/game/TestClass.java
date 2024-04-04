@@ -47,6 +47,7 @@ public class TestClass extends Activity {
     private Button loginButton;
     private Button signupButotn;
     private Button settingBtn;
+    private Button aboutbtn;
     private TextView usernameView;
     private TextView gameTitle;
     private ImageView imageView;
@@ -75,6 +76,8 @@ public class TestClass extends Activity {
         loginButton.setTypeface(typeface);
         signupButotn = findViewById(R.id.button_signup);
         signupButotn.setTypeface(typeface);
+        aboutbtn = findViewById(R.id.button_about);
+        aboutbtn.setTypeface(typeface);
         settingBtn = findViewById(R.id.button5);
         settingBtn.setTypeface(typeface);
         gameTitle = findViewById(R.id.textView2);
@@ -160,11 +163,33 @@ public class TestClass extends Activity {
             }
         });
 
+        aboutbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
+                startActivity(intent);
+            }
+        });
+
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 PopupMenu popupMenu = new PopupMenu(imageView.getContext(), view);
                 popupMenu.getMenuInflater().inflate(R.menu.context_menu, popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        if (menuItem.getItemId() == R.id.edit_avatar) {
+                            Intent photoPickIntent = new Intent(Intent.ACTION_PICK);
+                            photoPickIntent.setType("image/*");
+                            startActivityForResult(photoPickIntent, REQUEST_SELECT_IMAGE);
+                            return true;
+                        } else if (menuItem.getItemId() == R.id.log_out) {
+                            logoutUser();
+                            return true;
+                        } else return true;
+                    }
+                });
                 popupMenu.show();
 //                openContextMenu(view);
             }
