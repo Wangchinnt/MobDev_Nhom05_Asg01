@@ -6,25 +6,25 @@
 
     <TextView
         android:id="@+id/textViewTop"
-        android:layout_width="0dp"
+        android:layout_width="77dp"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
         android:layout_weight="1"
-        android:text="TOP" />
+        android:text="TOP"
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/textViewName"
-        android:layout_width="0dp"
-        android:textSize="20sp"
+        android:layout_width="163dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Name" />
+        android:text="Name"
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/textViewScore"
-        android:layout_width="0dp"
-        android:textSize="20sp"
-        android:layout_height="wrap_content"
+        android:layout_width="88dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:text="Score" />
+        android:text="Score"
+        android:textSize="20sp" />
 </LinearLayout>

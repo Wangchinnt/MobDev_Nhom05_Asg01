@@ -8,18 +8,21 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,8 +46,11 @@ public class TestClass extends Activity {
     private Button communityBtn;
     private Button loginButton;
     private Button signupButotn;
+    private Button settingBtn;
     private TextView usernameView;
+    private TextView gameTitle;
     private ImageView imageView;
+    private Typeface typeface;
     private SharedPreferences sharedPreferences;
     private static final int REQUEST_SELECT_IMAGE = 100;
 
@@ -55,20 +61,33 @@ public class TestClass extends Activity {
         startService(musicIntent);
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.test_layout);
+        typeface = Typeface.createFromAsset(getAssets(), "thaleah.ttf");
 
         mainBtn = findViewById(R.id.button);
+        mainBtn.setTypeface(typeface);
         highBtn = findViewById(R.id.button2);
+        highBtn.setTypeface(typeface);
         exitBtn = findViewById(R.id.button3);
+        exitBtn.setTypeface(typeface);
         communityBtn = findViewById(R.id.button6);
+        communityBtn.setTypeface(typeface);
         loginButton = findViewById(R.id.button_login);
+        loginButton.setTypeface(typeface);
         signupButotn = findViewById(R.id.button_signup);
+        signupButotn.setTypeface(typeface);
+        settingBtn = findViewById(R.id.button5);
+        settingBtn.setTypeface(typeface);
+        gameTitle = findViewById(R.id.textView2);
+        gameTitle.setTypeface(typeface);
         usernameView = findViewById(R.id.user_name);
+        usernameView.setTypeface(typeface);
+
         imageView = findViewById(R.id.user_image);
         databaseHandle = new DatabaseHandle(this);
 
         sharedPreferences = getSharedPreferences("user_data", MODE_PRIVATE);
 
-        registerForContextMenu(imageView);
+        this.registerForContextMenu(imageView);
 
         String name = sharedPreferences.getString("username", null);
         boolean logged_in = sharedPreferences.getBoolean("is_logged_in", false);
@@ -94,7 +113,11 @@ public class TestClass extends Activity {
         mainBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(myIntent2);
+                if (logged_in) {
+                    startActivity(myIntent2);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Please Sign In First", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -140,7 +163,10 @@ public class TestClass extends Activity {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openContextMenu(view);
+                PopupMenu popupMenu = new PopupMenu(imageView.getContext(), view);
+                popupMenu.getMenuInflater().inflate(R.menu.context_menu, popupMenu.getMenu());
+                popupMenu.show();
+//                openContextMenu(view);
             }
         });
     }
@@ -152,12 +178,21 @@ public class TestClass extends Activity {
     private void showLoginDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("SIGN IN");
+        builder.setIcon(R.drawable.user);
 
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
 
         final EditText editText = new EditText(this);
         editText.setHint("User Name");
+        editText.setGravity(Gravity.CENTER);
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        layoutParams.gravity = Gravity.CENTER;
+        editText.setLayoutParams(layoutParams);
         layout.addView(editText);
 
         builder.setView(layout);
@@ -172,8 +207,6 @@ public class TestClass extends Activity {
                     editor.putBoolean("is_logged_in", true);
                     editor.apply();
                     Toast.makeText(getApplicationContext(), "Logged In", Toast.LENGTH_SHORT).show();
-//                    loginButton.setVisibility(View.GONE);
-//                    signupButotn.setVisibility(View.GONE);
                     recreate();
                 } else {
                     Toast.makeText(getApplicationContext(), "User name does not exist !",Toast.LENGTH_SHORT).show();
@@ -189,18 +222,30 @@ public class TestClass extends Activity {
         });
 
         AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.background2);
         dialog.show();
     }
 
     private void showSignupAnalog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("SIGN UP");
+        builder.setIcon(R.drawable.user);
+
 
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
 
         final EditText editText = new EditText(this);
         editText.setHint("User Name");
+        editText.setGravity(Gravity.CENTER);
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        layoutParams.gravity = Gravity.CENTER;
+        editText.setLayoutParams(layoutParams);
+
         layout.addView(editText);
 
         builder.setView(layout);
@@ -221,6 +266,7 @@ public class TestClass extends Activity {
         });
 
         AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.background2);
         dialog.show();
     }
 
@@ -249,6 +295,7 @@ public class TestClass extends Activity {
         if (requestCode == REQUEST_SELECT_IMAGE && resultCode == RESULT_OK) {
             if (data != null) {
                 Uri selectedImageUri = data.getData();
+                imageView.setImageURI(selectedImageUri);
                 saveImageToInternalStorage(selectedImageUri);
             }
         }

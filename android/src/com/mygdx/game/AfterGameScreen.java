@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -27,6 +28,7 @@ public class AfterGameScreen extends AppCompatActivity {
     private Button shareButton;
     private Button skipButton;
     private String playerName;
+    private TextView textView;
     private String playerMessage;
     private int score;
     private double latitude;
@@ -40,6 +42,7 @@ public class AfterGameScreen extends AppCompatActivity {
         shareButton = findViewById(R.id.button7);
         skipButton = findViewById(R.id.button8);
         textInputEditText = findViewById(R.id.editText);
+        textView = findViewById(R.id.textView7);
         textInputEditText.setText("");
         databaseHandle = new DatabaseHandle(getApplicationContext());
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
@@ -49,6 +52,8 @@ public class AfterGameScreen extends AppCompatActivity {
         Intent intent = getIntent();
         playerName = intent.getStringExtra("name");
         score = intent.getIntExtra("score", 0);
+
+        textView.setText(playerName.toUpperCase() + ", YOU JUST GOT " + score + " SCORES !");
 
         databaseHandle.addPoint(new PlayerScore(score, playerName));
 

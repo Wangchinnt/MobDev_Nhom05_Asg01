@@ -134,6 +134,7 @@ public class PreGameScreen extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 if (i == RADIO_BUTTON_1_ID) {
                     customPath = null;
+                    imageView.setImageResource(R.drawable.background);
                     Toast.makeText(getApplicationContext(), "fsfs 1", Toast.LENGTH_SHORT).show();
                 } else if (i == RADIO_BUTTON_2_ID) {
                     dispatchTakePictureIntent();

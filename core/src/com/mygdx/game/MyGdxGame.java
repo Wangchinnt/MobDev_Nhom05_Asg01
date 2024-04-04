@@ -180,7 +180,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		fontParameter.size = 72;
 		fontParameter.borderWidth = 3.6f;
-		fontParameter.color = new Color(1, 1, 1, 0.3f);
+		fontParameter.color = new Color(1, 1, 1, 1.0f);
 		fontParameter.borderColor = new Color(0, 0, 0, 0.3f);
 		font = fontGenerator.generateFont(fontParameter);
 
