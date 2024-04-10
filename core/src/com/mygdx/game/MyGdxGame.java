@@ -89,6 +89,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	@Override
 	public void create () {
 		gyroscopeAvail = Gdx.input.isPeripheralAvailable(Input.Peripheral.Gyroscope);
+		androidAction.enableGyro();
 		batch = new SpriteBatch();
 		endStage = new Stage();
 		prepareHUD();
@@ -364,8 +365,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		upLimit = WORLD_HEIGHT - playerShip.bounds.y - playerShip.bounds.height;
 
 		if (gyroscopeAvail) {
-			float gyroX = Gdx.input.getGyroscopeX();
-			float gyroY = Gdx.input.getGyroscopeY();
+			float gyroX = androidAction.getGyroX();
+			float gyroY = androidAction.getGyroY();
 			if (gyroY > 0.3) {
 				if (playerShip.getBounds().x <= WORLD_WIDTH - playerShip.getBounds().width) {
 					playerShip.translate(playerShip.speed*2/3 * deltaTime, 0f);
@@ -381,7 +382,6 @@ public class MyGdxGame extends ApplicationAdapter {
 				if (playerShip.getBounds().y > playerShip.getBounds().height) {
 					playerShip.translate(0f, -playerShip.speed*2/3 * deltaTime);
 				}
-//				playerShip.translate(0f, -playerShip.speed/2 * deltaTime);
 			} else if (gyroX < -0.3) {
 				playerShip.translate(0f, playerShip.speed/2 * deltaTime);
 			}
