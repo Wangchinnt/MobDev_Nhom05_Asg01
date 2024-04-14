@@ -3,7 +3,6 @@
 ## Description
 <p>A simple Plane Shooter Game made with Android SDK (Java) and libGdx</p>
  Screenshots of the Game was uploaded in <strong>Issues</strong> <br/>
-Requirements(with versions we tested on)
 
 ## Features
 Here is features list of our game (click for more details) [Features description]([https://docs.google.com/document/d/1ljaTOq_aLTvvcEJ96rQs6PBrYiuqcYhQCl0aGjBaA14/edit])
