@@ -5,7 +5,7 @@
  Screenshots of the Game was uploaded in <strong>Issues</strong> <br/>
 
 ## Features
-Here is the features list of our game (click for more details) [Features description]([https://docs.google.com/document/d/1ljaTOq_aLTvvcEJ96rQs6PBrYiuqcYhQCl0aGjBaA14/edit])
+Here is the features list of our game (click for more details) [Features description](https://docs.google.com/document/d/1ljaTOq_aLTvvcEJ96rQs6PBrYiuqcYhQCl0aGjBaA14/edit?usp=sharing)
 ## Requirements(with versions we tested on)
 -  [Android Studio](https://developer.android.com/studio?gad_source=1gclid=CjwKCAjw_e2wBhAEEiwAyFFFo7okISJuJ9jEzHFOLbyf6hTAI86efO8MnpGMiVn95zQzaezl03nZlhoCLLcQAvD_BwE&gclsrc=aw.ds)
 ## Install
